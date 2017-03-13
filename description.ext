@@ -1,0 +1,229 @@
+// dzn Common Functions (remove if not using it)
+#include "dzn_commonFunctions\dzn_commonFunctions.hpp"
+#include "dzn_commonFunctions\ui\baseDialogs.hpp"
+#include "dzn_commonFunctions\ui\copyPasteDialog.hpp"
+#include "dzn_commonFunctions\ui\dynamicDialog.hpp"
+
+
+enableDebugConsole = 1;
+disabledAI = 1;
+respawn = 3;
+respawnDelay = 10; 
+
+class Params
+{   
+		class par_env_delimeter
+	{
+		title = "---- Environment Settings ---------"; 
+		values[] = {0};
+		texts[] = {""};
+	};	
+	class par_env_daytime
+	{
+	    title = "     Daytime";
+	    values[] = {0,1,2,3,4};
+	    default = 1;
+	    texts[] = {
+		"Random"
+		,"Morning"
+		,"Noon"
+		,"Evening"
+		,"Night"
+	    };
+	};
+	class par_env_weather
+	{
+	    title = "     Weather";
+	    values[] = {0,1,2,3,4,5};       
+	    texts[] = {
+		"Random"
+		,"Clear"
+		,"Almost clear"
+		,"Cloudy"
+		,"Rain"
+		,"Storm"
+	    };
+	    default = 0;
+	};
+	class par_env_timeMultiplier
+	{
+		title = "     Time multiplier";
+		values[] = {1,2,3,4,5};
+		default = 1;
+		texts[] = {
+			"x1"
+			,"x2"
+			,"x3"
+			,"x4"
+			,"x5"
+		};
+	};
+	
+		class par_path_delimeter
+	{
+		title = "---- Path Generation Settings ---------"; 
+		values[] = {0};
+		texts[] = {""};
+	};
+	class par_path_ShowStartPos
+	{
+		title = "     Mark path initial position";
+		values[] = {0,1};
+		default = 0;
+		texts[] = {
+			"No"
+			, "Yes"
+		};
+	};
+	class par_path_NumberOfCPs
+	{
+		title = "     Number of Checkpoints";
+		values[] = {3,4,5,6,7,8,9,10};
+		default = 5;
+	};
+	class par_path_DistnaceBetweenCPs
+	{
+		title = "     Distance betwen Checkpoints (m)";
+		values[] = {300,400,500,600,700,800,900,1000};
+		default = 600;
+	};
+	class par_path_NumberOfSubmissions
+	{
+		title = "     Number of Submissions on path";
+		values[] = {0,1,2,3};
+		default = 1;
+	};
+	class par_path_HostilePatrols
+	{
+		title = "     Amount of Hostile patrols in area";
+		values[] = {0,1,2};
+		default = 1;
+		texts[] = {
+			"None"
+			, "Few"
+			, "Many"
+		};
+	};
+	
+		class par_team_delimeter
+	{
+		title = "---- Team Settings ---------"; 
+		values[] = {0};
+		texts[] = {""};
+	};
+	
+	class par_team_EquipmentVest
+	{
+		title = "     Vest";
+		values[] = {0,1};
+		default = 0;
+		texts[] = {
+			"Training vest"
+			, "Body armor"
+		};
+	};
+	class par_team_EquipmentGhillie
+	{
+		title = "     Ghillie";
+		values[] = {0,1};
+		default = 0;
+		texts[] = {
+			"No"
+			, "Yes"
+		};
+	};
+	class par_team_EquipmentNVG
+	{
+		title = "     Night vision goggles";
+		values[] = {0,1};
+		default = 1;
+		texts[] = {
+			"No"
+			, "Yes"
+		};
+	};
+	class par_team_EquipmentBinoculars
+	{
+		title = "     Binocular type";
+		values[] = {0,1};
+		default = 0;
+		texts[] = {
+			"Binocular"
+			, "Nite 21"
+		};
+	};
+	
+		class par_score_delimeter
+	{
+		title = "---- Scoring Settings ---------"; 
+		values[] = {0};
+		texts[] = {""};
+	};
+	class par_score_AllowKillScore
+	{
+		title = "     Allow Kill score";
+		values[] = {0,1};
+		default = 1;
+		texts[] = {
+			"No"
+			, "Yes"
+		};
+	};
+	
+	
+		class par_dynai_delimeter
+	{
+		title = "---- dzn DynAI Settings ---------"; 
+		values[] = {0};
+		texts[] = {""};
+	};	
+	class par_dynai_amountMultiplier
+	{
+		title = "     Group Amount Multiplier";
+		values[] = {1,2,3,4,5,6,7,8,9,10};
+		default = 4;
+		texts[] = {
+			"x0.25"
+			,"x0.5"
+			,"x0.75"
+			,"x1"
+			,"x1.25"
+			,"x1.5"
+			,"x1.75"
+			,"x2"
+			,"Randomize (x1...1.5)"
+			,"Randomize (x1...2)"
+		};
+	};
+	class par_dynai_overrideSkill
+	{
+		title = "     Override Skill";
+		values[] = {0,1,2};
+		default = 0;
+		texts[] = {
+			"No"
+			, "General"
+			, "Complex"
+		};
+	};
+	class par_dynai_skillGeneral
+	{
+		title = "          Skill: General (%)";
+		values[] = {60,65,70,75,80,85,90,95,100};
+		default = 95;
+	};
+	class par_dynai_skillAccuracy
+	{
+		title = "          Skill (Complex): Accuracy (%)";
+		values[] = {40,45,50,55,60,65,70,75,80,85,90,95,100};
+		default = 80;
+	};
+	class par_dynai_skillAimSpeed
+	{
+		title = "          Skill (Complex): Aiming Speed (%)";
+		values[] = {40,45,50,55,60,65,70,75,80,85,90,95,100};
+		default = 90;
+	};
+};
+
+
