@@ -160,6 +160,9 @@ dzn_fnc_c_doReportAction = {
 	private _teamLogic = player getVariable "SSC_TeamLogic";
 	private _node = _teamLogic getVariable "SSC_PathNode";
 
+	_teamLogic setVariable ["SSC_SubmissionObject", nil, true];
+	_teamLogic getVariable ["SSC_SubmissionResult", nil, true];
+	
 	private _result = [
 		[format ["Are you sure, that you have reached Checkpoint %1?", _node], [0,0,0,.7]]
 		, ["Report", [.0,.4,.1,.5]]
@@ -182,6 +185,11 @@ dzn_fnc_c_doReportAction = {
 		_teamLogic setPos (getMarkerPos "respawn_west");
 	} else {
 		_node call dzn_fnc_c_MoveTeamLogic;
+		
+		if (_node in (_teamLogic getVariable "SSC_SubMissions")) then {			
+			private _submissionObj = (_node call dzn_fnc_c_getPathNode) call dzn_fnc_createSubMissionAsset;
+			_teamLogic setVariable ["SSC_SubmissionObject", _submissionObj, true];
+		}
 	};
 	
 	{
@@ -208,6 +216,54 @@ dzn_fnc_c_processReport = {
 	};
 };
 
+dzn_fnc_c_doReportSubmission = {
+	private _teamLogic = player getVariable "SSC_TeamLogic";
+	private _obj = _teamLogic getVariable "SSC_SubmissionObject";
+	
+	private _result = ["Report Submission Position (8-grid)",[
+		["X (4-digit)", []]
+		,["Y (4-digit)", []]
+	] call dzn_fnc_ShowChooseDialog;	
+	
+	if (
+		_result isEqualTo [] 
+		|| { (_result select 0) isEqualTo [] 
+		|| (_result select 1) isEqualTo [] }
+	) exitWith {};
+	
+	private _gridPos = [ parseNumber (_result select 0), parseNumber (_result select 1), 0];
+	private _accuracy = [
+		_gridPos distance2d _obj
+		, 15
+		, 300
+	] call dzn_fnc_c_CalculateAccuracy;
+	
+	_teamLogic getVariable ["SSC_SubmissionResult", _accuracy, true];
+	{
+		_x setVariable ["SSC_Processed", false, true];
+	} forEach (synchronizedObjects _teamLogic);
+};
+
+dzn_fnc_c_processSubmission - {
+	private _teamLogic = player getVariable "SSC_TeamLogic";
+	private _node = _teamLogic getVariable "SSC_PathNode";
+	
+	private _accuracy = str( _teamLogic getVariable "SSC_SubmissionResult" ) + "%";
+	hint format ["Reported submission accuracy - %1", _accuracy];
+	
+	/*
+	"SUCCEEDED" call dzn_fnc_c_finishTaskCP;
+	
+	sleep 2;
+	if (_node > par_path_NumberOfCPs) then {
+		sleep 2;
+		[player, getMarkerPos "respawn_west"] call dzn_fnc_c_MoveTo;
+		hint "Competition done";
+	} else {
+		[_node, _node call dzn_fnc_c_getPathNode] call dzn_fnc_c_createTaskCP;
+	};
+	*/
+};
 
 dzn_fnc_c_CalculateAccuracy = {
 	params ["_dist", "_min", "_max"];
@@ -233,7 +289,11 @@ addMissionEventHandler ["EachFrame", {
 
 	if (player getVariable "SSC_CompetitionStarted") then {
 		if ( (player getVariable "SSC_TeamLogic") getVariable "SSC_PathNode" > 1 ) then {
-			[] spawn dzn_fnc_c_processReport;
+			if (!isNil { (player getVariable "SSC_TeamLogic") getVariable "SSC_SubmissionResult" }) then {
+				[] spawn dzn_fnc_c_processSubmission;
+			} else {
+				[] spawn dzn_fnc_c_processReport;
+			};
 		} else {
 			[] spawn dzn_fnc_c_processStart;			
 		};		
